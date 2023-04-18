@@ -155,7 +155,7 @@ module Rack
         @storage.set_viewed(user(env), id)
         id        = ERB::Util.html_escape(id)
         user_info = ERB::Util.html_escape(user(env))
-        return [404, {}, ["Request not found: #{id} - user #{user_info}"]]
+        return [200, {'Access-Control-Allow-Origin' => '*', 'Access-Control-Allow-Headers' => 'x-requested-with'}, ["Request not found: #{id} - user #{user_info}"]]
       end
       if !page_struct[:has_user_viewed] && !is_snapshot
         page_struct[:client_timings]  = TimerStruct::Client.init_from_form_data(env, page_struct)
@@ -167,7 +167,7 @@ module Rack
       # If we're an XMLHttpRequest, serve up the contents as JSON
       if request.xhr?
         result_json = page_struct.to_json
-        [200, { 'Content-Type' => 'application/json' }, [result_json]]
+        [200, { 'Access-Control-Allow-Origin' => '*', 'Content-Type' => 'application/json' }, [result_json]]
       else
         # Otherwise give the HTML back
         html = generate_html(page_struct, env)
